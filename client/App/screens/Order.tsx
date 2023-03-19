@@ -1,8 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, ScrollView, Text, SafeAreaView, View } from "react-native";
+import {
+  StyleSheet,
+  ScrollView,
+  Text,
+  SafeAreaView,
+  View,
+  ActivityIndicator,
+} from "react-native";
+import { useSelector } from "react-redux";
 import { CategoryComponent } from "../components/Category";
 import colors from "../constants/colors";
-import { Plant, Category } from "../types";
+import { Plant, Category } from "../store/types";
+import { RootState } from "../store/reducers";
 
 const styles = StyleSheet.create({
   container: {
@@ -16,12 +25,17 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     color: colors.darkGreen,
   },
+  text: {
+    textAlign: "center",
+    fontWeight: "bold",
+  },
 });
 
 const Order = () => {
-  const [plantsData, setPlantsData] = useState<Array<Plant>>([]);
-  const [categoriesData, setCategoriesData] = useState<Array<Category>>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const plants = useSelector((state: RootState) => state.plants);
+
+  const categories = useSelector((state: RootState) => state.categories);
+  const [modifiedCategories, setModifiedCategories] = useState<Category[]>([]);
 
   const replacePlantsInCategories = (
     plants: Plant[],
@@ -37,39 +51,34 @@ const Order = () => {
     });
   };
   useEffect(() => {
-    Promise.all([
-      fetch(
-        "https://dev-agwa-public-static-assets-web.s3-us-west-2.amazonaws.com/data/catalogs/plants.json"
-      ).then((response) => response.json()),
-      fetch(
-        "https://dev-agwa-public-static-assets-web.s3-us-west-2.amazonaws.com/data/catalogs/agwafarm.json"
-      ).then((response) => response.json()),
-    ])
-      .then(([plants, categories]) => {
-        const modifiedCategories = replacePlantsInCategories(
-          plants.plants,
-          categories.categories
-        );
-        setPlantsData(plants.plants);
-        setCategoriesData(modifiedCategories);
-        setIsLoading(false);
-      })
-      .catch((error) => console.error(error));
+    if (!categories.isFetching && !plants.isFetching) {
+      const updatedData = replacePlantsInCategories(
+        plants.data,
+        categories.data
+      );
+      setModifiedCategories(updatedData);
+    }
   }, []);
 
-  if (isLoading) {
+  if (categories.isFetching || plants.isFetching) {
     return (
       <View style={styles.container}>
-        <Text>Loading...</Text>
+        <ActivityIndicator size="large" />
       </View>
     );
   }
-
+  if (categories.error || plants.error) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.text}>Something went wrong...</Text>
+        <Text style={styles.text}> Plese try again later.</Text>
+      </View>
+    );
+  }
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView style={styles.container}>
-        <Text style={styles.title}>Order Screen</Text>
-        {categoriesData.map((category) => (
+        {modifiedCategories.map((category) => (
           <CategoryComponent
             key={category.id}
             name={category.name}

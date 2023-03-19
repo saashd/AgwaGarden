@@ -9,7 +9,7 @@ import {
 } from "react-native";
 
 import colors from "../constants/colors";
-import { Plant } from "../types";
+import { Plant } from "../store/types";
 
 const screen = Dimensions.get("window");
 

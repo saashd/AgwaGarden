@@ -12,7 +12,7 @@ import {
 import { AntDesign } from "@expo/vector-icons";
 
 import colors from "../constants/colors";
-import { Plant } from "../types";
+import { Plant } from "../store/types";
 import { PlantComponent } from "./Plant";
 
 const screen = Dimensions.get("window");
@@ -71,7 +71,6 @@ export const CategoryComponent: React.FC<CategoryProps> = ({
   const [scrollViewWidth, setScrollViewWidth] = useState(0);
   const [currentXOffset, setCurrentXOffset] = useState(0);
   const [layoutWidth, setLayoutWidth] = useState(0);
-  const [hovered, setHovered] = useState(false);
   const numOfPlants = plants.length;
   const scrollViewRef = useRef<ScrollView>(null);
 
@@ -100,13 +99,6 @@ export const CategoryComponent: React.FC<CategoryProps> = ({
     });
   };
 
-  const handleScroll = (direction: string) => {
-    if (direction === "left") {
-      handleLeftArrow();
-    } else {
-      handleRightArrow();
-    }
-  };
 
   return (
     <View>
@@ -115,7 +107,7 @@ export const CategoryComponent: React.FC<CategoryProps> = ({
         {currentXOffset > 0 && (
           <TouchableOpacity
             style={styles.arrow}
-            onPress={() => handleScroll("left")}
+            onPress={() => handleLeftArrow()}
             disabled={currentXOffset <= 0}
           >
             <AntDesign name="left" size={16} style={styles.arrowIcon} />
@@ -141,7 +133,7 @@ export const CategoryComponent: React.FC<CategoryProps> = ({
         {currentXOffset + layoutWidth < scrollViewWidth && (
           <TouchableOpacity
             style={styles.arrow}
-            onPress={() => handleScroll("right")}
+            onPress={() => handleRightArrow()}
             disabled={currentXOffset + layoutWidth >= scrollViewWidth}
           >
             <AntDesign name="right" size={16} style={styles.arrowIcon} />

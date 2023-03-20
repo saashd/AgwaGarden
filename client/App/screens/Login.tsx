@@ -18,7 +18,7 @@ import MainButton from "../components/MainButton";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.white,
+    backgroundColor: colors.lightGreen,
     alignItems: "center",
     justifyContent: "center",
   },

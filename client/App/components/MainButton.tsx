@@ -1,6 +1,7 @@
 import React from "react";
 import { Button } from "@rneui/themed";
 import { GestureResponderEvent } from "react-native";
+import colors from "../constants/colors";
 
 interface ButtonProps {
   onPress: (e: GestureResponderEvent) => void;
@@ -14,7 +15,7 @@ const MainButton = ({ onPress, title, disabled }: ButtonProps) => {
       disabled={disabled}
       titleStyle={{ fontWeight: "700" }}
       buttonStyle={{
-        backgroundColor: "rgba(90, 154, 230, 1)",
+        backgroundColor: colors.darkGreen,
         borderColor: "transparent",
         borderWidth: 0,
         borderRadius: 30,

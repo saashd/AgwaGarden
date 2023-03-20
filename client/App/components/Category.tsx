@@ -14,6 +14,7 @@ import { AntDesign } from "@expo/vector-icons";
 import colors from "../constants/colors";
 import { Plant } from "../store/types";
 import { PlantComponent } from "./Plant";
+import ArrowButton from "./ArrowButton";
 
 const screen = Dimensions.get("window");
 
@@ -38,22 +39,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingTop: 10,
   },
-
-  arrow: {
-    width: 20,
-    height: 20,
-    borderRadius: 20,
-    justifyContent: "center",
-    alignItems: "center",
-    zIndex: 1,
-  },
-  arrowIcon: {
-    color: colors.blue,
-  },
   scrollViewContainer: {
     flexDirection: "row",
     alignItems: "flex-start",
-    padding: 10,
+    padding: 20,
     paddingHorizontal: 20,
     justifyContent: "center",
   },
@@ -99,19 +88,16 @@ export const CategoryComponent: React.FC<CategoryProps> = ({
     });
   };
 
-
   return (
     <View>
       <Text style={styles.title}>{name}</Text>
       <View style={styles.container}>
         {currentXOffset > 0 && (
-          <TouchableOpacity
-            style={styles.arrow}
-            onPress={() => handleLeftArrow()}
+          <ArrowButton
+            onPress={handleLeftArrow}
             disabled={currentXOffset <= 0}
-          >
-            <AntDesign name="left" size={16} style={styles.arrowIcon} />
-          </TouchableOpacity>
+            direction={"left"}
+          />
         )}
         <ScrollView
           horizontal
@@ -131,13 +117,11 @@ export const CategoryComponent: React.FC<CategoryProps> = ({
           ))}
         </ScrollView>
         {currentXOffset + layoutWidth < scrollViewWidth && (
-          <TouchableOpacity
-            style={styles.arrow}
-            onPress={() => handleRightArrow()}
+          <ArrowButton
+            onPress={handleRightArrow}
             disabled={currentXOffset + layoutWidth >= scrollViewWidth}
-          >
-            <AntDesign name="right" size={16} style={styles.arrowIcon} />
-          </TouchableOpacity>
+            direction={"right"}
+          />
         )}
       </View>
     </View>

@@ -33,7 +33,6 @@ const styles = StyleSheet.create({
 
 const Order = () => {
   const plants = useSelector((state: RootState) => state.plants);
-
   const categories = useSelector((state: RootState) => state.categories);
   const [modifiedCategories, setModifiedCategories] = useState<Category[]>([]);
 

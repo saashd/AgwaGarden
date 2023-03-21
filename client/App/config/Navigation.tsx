@@ -7,7 +7,6 @@ import Login from "../screens/Login";
 import Register from "../screens/Registration";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/reducers";
-import { User } from "../store/types";
 import { TouchableOpacity, Text } from "react-native";
 import { Entypo } from "@expo/vector-icons";
 import colors from "../constants/colors";
@@ -15,7 +14,7 @@ import { logout } from "../store/reducers/userReducer";
 
 const MainStack = createStackNavigator();
 const MainStackScreen = () => {
-  const user: User = useSelector((state: RootState) => state.user.data);
+  const user = useSelector((state: RootState) => state.user.data);
   const dispatch = useDispatch();
   return (
     <MainStack.Navigator
@@ -30,7 +29,7 @@ const MainStackScreen = () => {
         headerTintColor: colors.darkGreen,
       }}
     >
-      {user.email !== null ? (
+      {user._id !== null ? (
         <>
           <MainStack.Screen
             name="Home"

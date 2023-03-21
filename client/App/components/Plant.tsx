@@ -1,12 +1,5 @@
 import React from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Dimensions,
-  Image,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, StyleSheet, Dimensions, Image } from "react-native";
 
 import colors from "../constants/colors";
 import { Plant } from "../store/types";
@@ -22,7 +15,7 @@ const styles = StyleSheet.create({
   },
   plantName: {
     fontSize: 10,
-    fontWeight: 100,
+    fontWeight: "100",
     width: screen.width * 0.15,
     textAlign: "center",
     flexWrap: "wrap",
@@ -35,35 +28,13 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     paddingHorizontal: 10,
   },
-  buttonContainer: {
-    position: "absolute",
-    top: -5,
-    left: 5,
-  },
-  button: {
-    width: 20,
-    height: 20,
-    borderRadius: 20,
-    backgroundColor: colors.blue,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  buttonText: {
-    color: colors.white,
-    fontWeight: "bold",
-    fontSize: 16,
-  },
 });
 
 interface PlantProps {
   plant: Plant;
-  hideAddButton: boolean;
 }
 
-export const PlantComponent: React.FC<PlantProps> = ({
-  plant,
-  hideAddButton,
-}) => {
+export const PlantComponent: React.FC<PlantProps> = ({ plant }) => {
   return (
     <View style={styles.plantContainer}>
       <Image
@@ -73,13 +44,6 @@ export const PlantComponent: React.FC<PlantProps> = ({
         }}
       />
       <Text style={styles.plantName}>{plant.name}</Text>
-      {!hideAddButton && (
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>+</Text>
-          </TouchableOpacity>
-        </View>
-      )}
     </View>
   );
 };

@@ -1,10 +1,10 @@
 import React, { useState, useRef } from "react";
+import { useDispatch } from "react-redux";
 import {
   View,
   Text,
   StyleSheet,
   ScrollView,
-  Dimensions,
   NativeSyntheticEvent,
   NativeScrollEvent,
 } from "react-native";
@@ -13,7 +13,8 @@ import colors from "../constants/colors";
 import { Plant } from "../store/types";
 import { PlantComponent } from "./Plant";
 import ArrowButton from "./ArrowButton";
-
+import ActionButton from "./ActionButton";
+import { updateDefaultSelectionStatus } from "../store/reducers/userReducer";
 
 const styles = StyleSheet.create({
   title: {
@@ -48,19 +49,29 @@ const styles = StyleSheet.create({
 interface CategoryProps {
   name: string;
   plants: Plant[];
-  hideAddButton: boolean;
+  buttonAction: "+" | "-" | null;
+  displayOccurences: boolean;
+  defaultSelectedPlantsIds: Array<string>;
+  onSelectedPlantsChange: (selectedPlantsIds: Array<string>) => void;
 }
 
 export const CategoryComponent: React.FC<CategoryProps> = ({
   name,
   plants,
-  hideAddButton
+  buttonAction,
+  displayOccurences,
+  defaultSelectedPlantsIds,
+  onSelectedPlantsChange,
 }) => {
+  const dispatch = useDispatch();
   const [scrollViewWidth, setScrollViewWidth] = useState(0);
   const [currentXOffset, setCurrentXOffset] = useState(0);
   const [layoutWidth, setLayoutWidth] = useState(0);
-  const numOfPlants = plants.length;
+  // const defaultSelectedPlantsIds = useSelector(
+  // (state: RootState) => state.user.data.default_plants_selection
+  // );
   const scrollViewRef = useRef<ScrollView>(null);
+  const numOfPlants = plants.length;
 
   const _handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const newXOffset = event.nativeEvent.contentOffset.x;
@@ -85,6 +96,31 @@ export const CategoryComponent: React.FC<CategoryProps> = ({
       y: 0,
       animated: true,
     });
+  };
+
+  const handleActionButton = (action: string, plantId: string) => {
+    let updatedSelection: Array<string> = [];
+    if (action == "+") {
+      onSelectedPlantsChange([...defaultSelectedPlantsIds, plantId]);
+    } else {
+      updatedSelection = [...defaultSelectedPlantsIds];
+      const index = updatedSelection.indexOf(plantId);
+      if (index > -1) {
+        updatedSelection.splice(index, 1);
+      }
+      onSelectedPlantsChange(updatedSelection);
+    }
+    dispatch(updateDefaultSelectionStatus(true));
+  };
+
+  const countOccurences = (plantId: string) => {
+    const count = defaultSelectedPlantsIds.reduce((acc, curr) => {
+      if (curr === plantId) {
+        acc++;
+      }
+      return acc;
+    }, 0);
+    return count;
   };
 
   return (
@@ -112,7 +148,27 @@ export const CategoryComponent: React.FC<CategoryProps> = ({
           scrollEventThrottle={50}
         >
           {plants.map((plant) => (
-            <PlantComponent key={plant.id} plant={plant} hideAddButton={hideAddButton}/>
+            <View key={plant.id}>
+              {buttonAction != null && (
+                <ActionButton
+                  action={buttonAction}
+                  onPress={() => handleActionButton(buttonAction, plant.id)}
+                  buttonDirection={"left"}
+                  disabled={
+                    defaultSelectedPlantsIds.length >= 5 && buttonAction == "+"
+                  }
+                />
+              )}
+              <PlantComponent plant={plant} />
+              {displayOccurences && (
+                <ActionButton
+                  action={countOccurences(plant.id).toString()}
+                  onPress={() => null}
+                  buttonDirection={"right"}
+                  disabled={true}
+                />
+              )}
+            </View>
           ))}
         </ScrollView>
         {currentXOffset + layoutWidth < scrollViewWidth && (

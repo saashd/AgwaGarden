@@ -7,13 +7,13 @@ import {
   View,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
+import { Snackbar } from "@react-native-material/core";
 import colors from "../constants/colors";
 import { fetchPlants, fetchCategories } from "../store/actions";
 import { RootState } from "../store/reducers";
-import { Plant } from "../store/types";
 import MainButton from "../components/MainButton";
 import DefaultPlantsSelection from "../components/DefaultPlantsSelection";
-
+import { updateDefaultSelectionStatus } from "../store/reducers/userReducer";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -38,40 +38,46 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  confirmationText: {
+    color: colors.darkGreen,
+    fontSize: 16,
+    textAlign: "center",
+    marginVertical: 10,
+  },
 });
 
-const updateSelection = (plants: Plant[], plantsIds: string[]) => {
-  return plants.filter((plant) => {
-    return plantsIds.includes(plant.id);
-  });
-};
-
-const Home = ({ navigation }) => {
+const Home = ({ route, navigation }) => {
+  const confirmation = route.params?.confirmation;
   const dispatch = useDispatch();
-  const [defaultSelectedPlants, setDefaultSelectedPlantsIds] = useState<
-    Plant[]
-  >([]);
   const defaultSelectedPlantsIds = useSelector(
     (state: RootState) => state.user.data.default_plants_selection
   );
-  const data = useSelector((state: RootState) => state.user.data);
-  const allPlants = useSelector((state: RootState) => state.plants.data);
-  useEffect(() => {
-    fetchCategories(dispatch);
-    fetchPlants(dispatch);
-    setDefaultSelectedPlantsIds(
-      updateSelection(allPlants, defaultSelectedPlantsIds)
-    );
-  }, []);
+  const [loading, setLoading] = useState(true);
+  const [displayConfirmation, setDisplayConfirmation] = useState(false);
 
-  if (defaultSelectedPlants.length === 0) {
+  useEffect(() => {
+    const fetchData = async () => {
+      await Promise.all([fetchCategories(dispatch), fetchPlants(dispatch)]);
+      setLoading(false);
+    };
+    fetchData();
+    dispatch(updateDefaultSelectionStatus(false));
+  }, [dispatch]);
+  useEffect(() => {
+    if (confirmation) {
+      setDisplayConfirmation(true);
+      setTimeout(() => {
+        setDisplayConfirmation(false);
+      }, 2000);
+    }
+  }, [confirmation]);
+  if (loading) {
     return (
       <View style={styles.container}>
         <ActivityIndicator size="large" color={colors.darkGreen} />
       </View>
     );
   }
-
   return (
     <ScrollView style={styles.container}>
       <View style={styles.content}>
@@ -79,12 +85,40 @@ const Home = ({ navigation }) => {
           Your monthly AgwaFarm {"\n"}
           plants selection:
         </Text>
-        <DefaultPlantsSelection />
+        <DefaultPlantsSelection
+          buttonAction={null}
+          title=""
+          defaultSelectedPlantsIds={defaultSelectedPlantsIds}
+          onSelectedPlantsChange={() => null}
+        />
         <MainButton
           disabled={false}
           title="Update Selection"
           onPress={() => navigation.push("Order")}
         />
+      </View>
+      <View
+        style={{
+          flex: 1,
+          marginTop: 50,
+        }}
+      >
+        {displayConfirmation && (
+          <Snackbar
+            message={confirmation}
+            style={{
+              backgroundColor: colors.darkGreen,
+              position: "absolute",
+              start: 16,
+              end: 16,
+              flex: 1,
+              padding: 10,
+              borderRadius: 10,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          />
+        )}
       </View>
     </ScrollView>
   );

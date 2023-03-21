@@ -8,6 +8,7 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const cors_1 = __importDefault(require("cors"));
 const authRoute = require("./routes/auth");
+const userRoute = require("./routes/user");
 const app = (0, express_1.default)();
 dotenv_1.default.config();
 app.get('/', (req, res) => {
@@ -21,6 +22,7 @@ mongoose_1.default.connect(process.env.MONGO_URL)
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
 app.use("/api/auth", authRoute);
+app.use("/api/user", userRoute);
 app.listen(5000, () => {
     console.log("Backend server is running");
 });

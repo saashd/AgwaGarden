@@ -1,3 +1,4 @@
+
 import {configureStore, combineReducers, createStore} from "@reduxjs/toolkit";
 import categoriesReducer from "./reducers/categoriesReducer";
 import plantsReducer from "./reducers/plantsReducer";

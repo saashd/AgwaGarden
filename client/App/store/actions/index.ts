@@ -10,7 +10,6 @@ export const fetchPlants = async (dispatch:Dispatch) => {
   dispatch(getPlantsStart());
   try {
     const response = await axios.get('https://dev-agwa-public-static-assets-web.s3-us-west-2.amazonaws.com/data/catalogs/plants.json');
-
       dispatch(getPlantsSuccess(response.data.plants));
   } catch (err) {
       dispatch(getPlantsFailure());
@@ -50,4 +49,5 @@ export const login = async (dispatch:Dispatch, user: { email: string; password: 
       return true
   }
 };
+
 

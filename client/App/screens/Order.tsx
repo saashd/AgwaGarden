@@ -82,6 +82,7 @@ const Order = () => {
             key={category.id}
             name={category.name}
             plants={category.plants}
+            hideAddButton={false}
           />
         ))}
       </ScrollView>

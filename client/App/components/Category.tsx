@@ -1,7 +1,6 @@
 import React, { useState, useRef } from "react";
 import {
   View,
-  TouchableOpacity,
   Text,
   StyleSheet,
   ScrollView,
@@ -9,14 +8,12 @@ import {
   NativeSyntheticEvent,
   NativeScrollEvent,
 } from "react-native";
-import { AntDesign } from "@expo/vector-icons";
 
 import colors from "../constants/colors";
 import { Plant } from "../store/types";
 import { PlantComponent } from "./Plant";
 import ArrowButton from "./ArrowButton";
 
-const screen = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   title: {
@@ -51,11 +48,13 @@ const styles = StyleSheet.create({
 interface CategoryProps {
   name: string;
   plants: Plant[];
+  hideAddButton: boolean;
 }
 
 export const CategoryComponent: React.FC<CategoryProps> = ({
   name,
   plants,
+  hideAddButton
 }) => {
   const [scrollViewWidth, setScrollViewWidth] = useState(0);
   const [currentXOffset, setCurrentXOffset] = useState(0);
@@ -113,7 +112,7 @@ export const CategoryComponent: React.FC<CategoryProps> = ({
           scrollEventThrottle={50}
         >
           {plants.map((plant) => (
-            <PlantComponent key={plant.id} plant={plant} />
+            <PlantComponent key={plant.id} plant={plant} hideAddButton={hideAddButton}/>
           ))}
         </ScrollView>
         {currentXOffset + layoutWidth < scrollViewWidth && (

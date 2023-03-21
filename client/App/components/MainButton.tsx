@@ -22,7 +22,6 @@ const MainButton = ({ onPress, title, disabled }: ButtonProps) => {
       }}
       containerStyle={{
         width: 200,
-        marginHorizontal: 50,
         marginVertical: 10,
       }}
       title={title}

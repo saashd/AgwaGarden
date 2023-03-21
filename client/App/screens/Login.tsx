@@ -11,7 +11,6 @@ import { useDispatch, useSelector } from "react-redux";
 import colors from "../constants/colors";
 import { login } from "../store/actions";
 import { RootState } from "../store/reducers";
-import { Button } from "@rneui/themed";
 import { StatusBar } from "expo-status-bar";
 import MainButton from "../components/MainButton";
 
@@ -30,8 +29,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   input: {
-    height: 15,
-    margin: 12,
+    height: 35,
     padding: 10,
   },
   text: {

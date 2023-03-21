@@ -19,6 +19,14 @@ const userSchema = new mongoose_1.Schema({
         type: String,
         required: [true, "Please provide a password!"],
     },
+    onboarding: {
+        type: Date,
+        required: true,
+    },
+    default_plants_selection: {
+        type: Array,
+        required: true,
+    },
 }, {
     timestamps: true,
     collection: "users"

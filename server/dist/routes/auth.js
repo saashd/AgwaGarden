@@ -29,10 +29,11 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const router = require("express").Router();
 //REGISTER
 router.post("/register", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(req.body);
     const newUser = new user_1.default({
         first_name: req.body.first_name,
         last_name: req.body.last_name,
+        onboarding: new Date(),
+        default_plants_selection: ["cucumber_iznik", "claytonia_special", "parsley_celery_flavored", "arugula_astro", "lettuce_romain"],
         email: req.body.email,
         password: crypto_js_1.default.AES.encrypt(req.body.password, process.env.PASS_SEC).toString(),
     });

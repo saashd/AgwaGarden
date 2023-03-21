@@ -1,5 +1,4 @@
 import {Response, Request} from "express"
-import {IUser} from "../types/user";
 import User from "../models/user";
 import CryptoJS from "crypto-js";
 import jwt from "jsonwebtoken";
@@ -10,12 +9,16 @@ const router = require("express").Router();
 router.post("/register", async (req:Request, res:Response) => {
     const newUser = new User({
         first_name: req.body.first_name,
-        last_name: req.body.last_name,
+        last_name: req.body.last_name,        
+        onboarding:new Date(),
+        default_plants_selection:["cucumber_iznik","claytonia_special","parsley_celery_flavored","arugula_astro","lettuce_romain"],
         email: req.body.email,
         password: CryptoJS.AES.encrypt(
             req.body.password,
             process.env.PASS_SEC
         ).toString(),
+
+        
     });
     try {
         const savedUser = await newUser.save();

@@ -57,9 +57,13 @@ const styles = StyleSheet.create({
 
 interface PlantProps {
   plant: Plant;
+  hideAddButton: boolean;
 }
 
-export const PlantComponent: React.FC<PlantProps> = ({ plant }) => {
+export const PlantComponent: React.FC<PlantProps> = ({
+  plant,
+  hideAddButton,
+}) => {
   return (
     <View style={styles.plantContainer}>
       <Image
@@ -69,11 +73,13 @@ export const PlantComponent: React.FC<PlantProps> = ({ plant }) => {
         }}
       />
       <Text style={styles.plantName}>{plant.name}</Text>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>+</Text>
-        </TouchableOpacity>
-      </View>
+      {!hideAddButton && (
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.button}>
+            <Text style={styles.buttonText}>+</Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 };

@@ -11,6 +11,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     zIndex: 1,
+    marginLeft: 10,
+    marginRight: 10,
   },
   arrowIcon: {
     color: colors.blue,

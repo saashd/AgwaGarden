@@ -30,7 +30,7 @@ const MainStackScreen = () => {
         headerTintColor: colors.darkGreen,
       }}
     >
-      {user.email ? (
+      {user.email !== null ? (
         <>
           <MainStack.Screen
             name="Home"

@@ -23,6 +23,6 @@ app.use((0, cors_1.default)());
 app.use(express_1.default.json());
 app.use("/api/auth", authRoute);
 app.use("/api/user", userRoute);
-app.listen(5000, () => {
+app.listen(4000, () => {
     console.log("Backend server is running");
 });

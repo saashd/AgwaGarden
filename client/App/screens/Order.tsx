@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   StyleSheet,
   ScrollView,
@@ -6,6 +6,7 @@ import {
   SafeAreaView,
   View,
   ActivityIndicator,
+  Animated,
 } from "react-native";
 import { useSelector } from "react-redux";
 import { CategoryComponent } from "../components/Category";
@@ -20,12 +21,13 @@ import {
   updateDefaultSelection,
   updateDefaultSelectionStatus,
 } from "../store/reducers/userReducer";
+import { fadeIn, fadeOut } from "../utils/buttonAnimation";
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: colors.lightGreen,
+    
   },
   text: {
     textAlign: "center",
@@ -36,10 +38,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   title: {
-    marginTop: 15,
     fontSize: 20,
     color: colors.blue,
-    fontWeight: "bold",
+  },
+  hidden: {
+    opacity: 0,
   },
 });
 
@@ -65,6 +68,28 @@ const Order = ({ navigation }) => {
   >(
     useSelector((state: RootState) => state.user.data.default_plants_selection)
   );
+  const showButton =
+    defaultSelectedPlantsIds.length === 5 && defaultSelectionUpdateStatus;
+  const buttonOpacity = useRef(new Animated.Value(0)).current;
+  const buttonHeight = new Animated.Value(0);
+  const buttonStyle = {
+    transform: [
+      {
+        translateY: buttonOpacity.interpolate({
+          inputRange: [0, 1],
+          outputRange: [10, 0],
+        }),
+      },
+      {
+        scaleY: buttonOpacity.interpolate({
+          inputRange: [0, 1],
+          outputRange: [0, 1],
+        }),
+      },
+    ],
+    height: buttonHeight,
+    opacity: buttonOpacity,
+  };
 
   const replacePlantsInCategories = useCallback(
     (plants: Plant[], categories: Category[]) => {
@@ -93,6 +118,12 @@ const Order = ({ navigation }) => {
   };
 
   useEffect(() => {
+    showButton
+      ? fadeIn(buttonOpacity, buttonHeight)
+      : fadeOut(buttonOpacity, buttonHeight);
+  }, [showButton]);
+
+  useEffect(() => {
     if (!isFetching) {
       const updatedData = replacePlantsInCategories(
         plants.data,
@@ -113,31 +144,36 @@ const Order = ({ navigation }) => {
     return (
       <View style={styles.container}>
         <Text style={styles.text}>
-          Something went wrong... {"\n"} Plese try again later.
+          Something went wrong... {"\n"} Please try again later.
         </Text>
       </View>
     );
   }
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <ScrollView style={styles.container}>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={{ justifyContent: "center" }}
+      >
         <DefaultPlantsSelection
           buttonAction={"-"}
           title="Selected Plants"
           defaultSelectedPlantsIds={defaultSelectedPlantsIds}
           onSelectedPlantsChange={setDefaultSelectedPlantsIds}
         />
-        {defaultSelectedPlantsIds.length === 5 &&
-          defaultSelectionUpdateStatus && (
-            <View style={styles.mainButtonContainer}>
-              <MainButton
-                disabled={false}
-                title="Save Selection"
-                onPress={saveDefaultSelection}
-              />
-            </View>
-          )}
-        <Text style={styles.title}>You can select 5 plants by choise:</Text>
+
+        <Animated.View style={buttonStyle}>
+          <View style={[styles.mainButtonContainer]}>
+            <MainButton
+              disabled={!showButton}
+              title="Save Selection"
+              onPress={saveDefaultSelection}
+            />
+          </View>
+        </Animated.View>
+
+        <Text style={styles.title}>You can select 5 plants by choice:</Text>
         {modifiedCategories.map((category) => (
           <CategoryComponent
             buttonAction={"+"}

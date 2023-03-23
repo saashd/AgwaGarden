@@ -5,6 +5,8 @@ import {
   Text,
   ScrollView,
   View,
+  Image,
+  Dimensions,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { Snackbar } from "@react-native-material/core";
@@ -14,25 +16,21 @@ import { RootState } from "../store/reducers";
 import MainButton from "../components/MainButton";
 import DefaultPlantsSelection from "../components/DefaultPlantsSelection";
 import { updateDefaultSelectionStatus } from "../store/reducers/userReducer";
+const screen = Dimensions.get("window");
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.lightGreen,
   },
   text: {
     fontWeight: "bold",
     color: colors.darkGreen,
     fontSize: 20,
     textAlign: "center",
-    top: 30,
-  },
-  header: {
-    alignItems: "flex-end",
-    marginHorizontal: 20,
+    padding: 20,
   },
   content: {
     flex: 1,
-    paddingTop: 60,
+    marginTop: 150,
     paddingLeft: 20,
     paddingRight: 20,
     justifyContent: "center",
@@ -42,7 +40,17 @@ const styles = StyleSheet.create({
     color: colors.darkGreen,
     fontSize: 16,
     textAlign: "center",
-    marginVertical: 10,
+  },
+  confirmationContainer: {
+    backgroundColor: colors.darkGreen,
+    position: "absolute",
+    start: 16,
+    end: 16,
+    borderRadius: 10,
+  },
+  image: {
+    width: screen.width * 0.15,
+    height: screen.width * 0.15,
   },
 });
 
@@ -58,7 +66,8 @@ const Home = ({ route, navigation }) => {
   useEffect(() => {
     const fetchData = async () => {
       await Promise.all([fetchCategories(dispatch), fetchPlants(dispatch)]);
-      setLoading(false);
+
+      defaultSelectedPlantsIds && setLoading(false);
     };
     fetchData();
     dispatch(updateDefaultSelectionStatus(false));
@@ -80,7 +89,12 @@ const Home = ({ route, navigation }) => {
   }
   return (
     <ScrollView style={styles.container}>
+      {displayConfirmation && (
+        <Snackbar message={confirmation} style={styles.confirmationContainer} />
+      )}
+
       <View style={styles.content}>
+        <Image style={styles.image} source={require("../../assets/logo.png")} />
         <Text style={styles.text}>
           Your monthly AgwaFarm {"\n"}
           plants selection:
@@ -91,34 +105,13 @@ const Home = ({ route, navigation }) => {
           defaultSelectedPlantsIds={defaultSelectedPlantsIds}
           onSelectedPlantsChange={() => null}
         />
-        <MainButton
-          disabled={false}
-          title="Update Selection"
-          onPress={() => navigation.push("Order")}
-        />
-      </View>
-      <View
-        style={{
-          flex: 1,
-          marginTop: 50,
-        }}
-      >
-        {displayConfirmation && (
-          <Snackbar
-            message={confirmation}
-            style={{
-              backgroundColor: colors.darkGreen,
-              position: "absolute",
-              start: 16,
-              end: 16,
-              flex: 1,
-              padding: 10,
-              borderRadius: 10,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
+        <View style={{ bottom: "40%" }}>
+          <MainButton
+            disabled={false}
+            title="Update Selection"
+            onPress={() => navigation.push("Order")}
           />
-        )}
+        </View>
       </View>
     </ScrollView>
   );

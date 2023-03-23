@@ -6,6 +6,7 @@ import {
   View,
   StyleSheet,
   GestureResponderEvent,
+  ActivityIndicator,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import colors from "../constants/colors";
@@ -17,7 +18,6 @@ import MainButton from "../components/MainButton";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.lightGreen,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -58,6 +58,9 @@ const LoginScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style="auto" />
+      {isFetching && (
+        <ActivityIndicator size="large" color={colors.darkGreen} />
+      )}
       <View style={styles.inputView}>
         <TextInput
           style={styles.input}

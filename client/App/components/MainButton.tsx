@@ -19,6 +19,7 @@ const MainButton = ({ onPress, title, disabled }: ButtonProps) => {
         borderColor: "transparent",
         borderWidth: 0,
         borderRadius: 30,
+        height: 40,
       }}
       containerStyle={{
         width: 200,

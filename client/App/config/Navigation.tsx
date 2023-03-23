@@ -7,7 +7,7 @@ import Login from "../screens/Login";
 import Register from "../screens/Registration";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/reducers";
-import { TouchableOpacity, Text } from "react-native";
+import { TouchableOpacity } from "react-native";
 import { Entypo } from "@expo/vector-icons";
 import colors from "../constants/colors";
 import { logout } from "../store/reducers/userReducer";
@@ -19,6 +19,9 @@ const MainStackScreen = () => {
   return (
     <MainStack.Navigator
       screenOptions={{
+        cardStyle: {
+          backgroundColor: colors.lightGreen,
+        },
         headerStyle: {
           backgroundColor: colors.lightGreen,
         },
@@ -36,45 +39,21 @@ const MainStackScreen = () => {
             component={Home}
             options={{
               title: `Welcome ${user.first_name}!`,
-              headerRight: () => (
-                <TouchableOpacity onPress={() => dispatch(logout())}>
-                  <Entypo name="log-out" size={22} color={colors.darkGreen} />
-                </TouchableOpacity>
-              ),
+              headerRight: () => LogOut(),
               headerLeft: () => null,
             }}
           />
           <MainStack.Screen
             name="Order"
             component={Order}
-            options={({ navigation }) => ({
+            options={{
               title: "Select Plants",
-              headerRight: () => (
-                <TouchableOpacity onPress={() => dispatch(logout())}>
-                  <Entypo name="log-out" size={22} color={colors.darkGreen} />
-                </TouchableOpacity>
-              ),
-              headerLeft: () => (
-                <TouchableOpacity
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "flex-start",
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                  onPress={() => navigation.push("Home")}
-                >
-                  <Entypo
-                    name="chevron-left"
-                    size={26}
-                    color={colors.darkGreen}
-                  />
-                  <Text style={{ color: colors.darkGreen, fontWeight: "bold" }}>
-                    Home
-                  </Text>
-                </TouchableOpacity>
-              ),
-            })}
+              headerRight: () => LogOut(),
+              headerBackTitle: "Home",
+              headerBackTitleStyle: {
+                color: colors.darkGreen,
+              },
+            }}
           />
         </>
       ) : (
@@ -84,6 +63,18 @@ const MainStackScreen = () => {
         </>
       )}
     </MainStack.Navigator>
+  );
+};
+
+const LogOut = () => {
+  const dispatch = useDispatch();
+  return (
+    <TouchableOpacity
+      onPress={() => dispatch(logout())}
+      style={{ marginRight: 10 }}
+    >
+      <Entypo name="log-out" size={22} color={colors.darkGreen} />
+    </TouchableOpacity>
   );
 };
 

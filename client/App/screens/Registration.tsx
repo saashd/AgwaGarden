@@ -6,6 +6,7 @@ import {
   View,
   StyleSheet,
   GestureResponderEvent,
+  ActivityIndicator,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import colors from "../constants/colors";
@@ -16,7 +17,7 @@ import MainButton from "../components/MainButton";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.lightGreen,
+
     alignItems: "center",
     justifyContent: "center",
   },
@@ -57,7 +58,7 @@ const Register = ({ navigation }) => {
         password,
       }).then((error) => {
         if (!error) {
-          navigation.push("Login");
+          navigation.push("Home");
         } else {
           setIsError(error);
         }
@@ -69,6 +70,9 @@ const Register = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
+      {isFetching && (
+        <ActivityIndicator size="large" color={colors.darkGreen} />
+      )}
       <Text style={styles.text}>First Name</Text>
       <View style={styles.inputView}>
         <TextInput

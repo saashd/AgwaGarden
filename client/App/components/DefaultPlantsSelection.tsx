@@ -21,6 +21,7 @@ const DefaultPlantsSelection: React.FC<DefaultPlantsSelectionProps> = ({
 }) => {
   const plants = useSelector((state: RootState) => state.plants.data);
   const filteredPlants = plants.filter((plant: Plant) =>
+  
     defaultSelectedPlantsIds.includes(plant.id)
   );
   return (

@@ -4,9 +4,8 @@ import {
   View,
   Text,
   StyleSheet,
-  ScrollView,
-  NativeSyntheticEvent,
-  NativeScrollEvent,
+  FlatList,
+  Dimensions,
 } from "react-native";
 
 import colors from "../constants/colors";
@@ -15,13 +14,12 @@ import { PlantComponent } from "./Plant";
 import ArrowButton from "./ArrowButton";
 import ActionButton from "./ActionButton";
 import { updateDefaultSelectionStatus } from "../store/reducers/userReducer";
-
+const screen = Dimensions.get("window");
 const styles = StyleSheet.create({
   title: {
     marginTop: 15,
     fontSize: 18,
     color: colors.blue,
-    fontWeight: "bold",
   },
   container: {
     marginHorizontal: 5,
@@ -40,8 +38,7 @@ const styles = StyleSheet.create({
   scrollViewContainer: {
     flexDirection: "row",
     alignItems: "flex-start",
-    padding: 20,
-    paddingHorizontal: 20,
+    padding: 10,
     justifyContent: "center",
   },
 });
@@ -64,39 +61,9 @@ export const CategoryComponent: React.FC<CategoryProps> = ({
   onSelectedPlantsChange,
 }) => {
   const dispatch = useDispatch();
-  const [scrollViewWidth, setScrollViewWidth] = useState(0);
-  const [currentXOffset, setCurrentXOffset] = useState(0);
-  const [layoutWidth, setLayoutWidth] = useState(0);
-  // const defaultSelectedPlantsIds = useSelector(
-  // (state: RootState) => state.user.data.default_plants_selection
-  // );
-  const scrollViewRef = useRef<ScrollView>(null);
-  const numOfPlants = plants.length;
-
-  const _handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const newXOffset = event.nativeEvent.contentOffset.x;
-    setCurrentXOffset(newXOffset);
-  };
-
-  const handleLeftArrow = () => {
-    const eachItemOffset = scrollViewWidth / numOfPlants;
-    const _currentXOffset = currentXOffset - eachItemOffset;
-    scrollViewRef.current?.scrollTo({
-      x: _currentXOffset,
-      y: 0,
-      animated: true,
-    });
-  };
-
-  const handleRightArrow = () => {
-    const eachItemOffset = scrollViewWidth / numOfPlants;
-    const _currentXOffset = currentXOffset + eachItemOffset;
-    scrollViewRef.current?.scrollTo({
-      x: _currentXOffset,
-      y: 0,
-      animated: true,
-    });
-  };
+  const flatListRef = useRef<FlatList<Plant> | null>(null);
+  const [scrollOffset, setScrollOffset] = useState(0);
+  const ITEM_WIDTH = screen.width * 0.2;
 
   const handleActionButton = (action: string, plantId: string) => {
     let updatedSelection: Array<string> = [];
@@ -123,61 +90,62 @@ export const CategoryComponent: React.FC<CategoryProps> = ({
     return count;
   };
 
+  const handleScrollLeft = () => {
+    if (flatListRef.current) {
+      const newOffset = Math.max(0, scrollOffset - ITEM_WIDTH);
+      flatListRef.current.scrollToOffset({ offset: newOffset, animated: true });
+      setScrollOffset(newOffset);
+    }
+  };
+
+  const handleScrollRight = () => {
+    if (flatListRef.current) {
+      const newOffset = Math.min(
+        (plants.length - 1) * ITEM_WIDTH,
+        scrollOffset + ITEM_WIDTH
+      );
+      flatListRef.current.scrollToOffset({ offset: newOffset, animated: true });
+      setScrollOffset(newOffset);
+    }
+  };
   return (
     <View>
       <Text style={styles.title}>{name}</Text>
       <View style={styles.container}>
-        {currentXOffset > 0 && (
-          <ArrowButton
-            onPress={handleLeftArrow}
-            disabled={currentXOffset <= 0}
-            direction={"left"}
-          />
-        )}
-        <ScrollView
-          horizontal
-          pagingEnabled
-          showsHorizontalScrollIndicator={false}
-          ref={scrollViewRef}
-          contentContainerStyle={styles.scrollViewContainer}
-          onLayout={(event) => setLayoutWidth(event.nativeEvent.layout.width)}
-          onContentSizeChange={(width) =>
-            setScrollViewWidth(width - layoutWidth)
-          }
-          onScroll={_handleScroll}
-          scrollEventThrottle={50}
-        >
-          {plants.map((plant) => (
-            <View key={plant.id}>
-              {buttonAction != null && (
+        <ArrowButton onPress={handleScrollLeft} direction={"left"} />
+        <FlatList
+          data={plants}
+          ref={flatListRef}
+          renderItem={({ item }) => (
+            <View key={item.id}>
+              {(buttonAction == "-" ||
+                (defaultSelectedPlantsIds.length < 5 &&
+                  buttonAction == "+")) && (
                 <ActionButton
                   action={buttonAction}
-                  onPress={() => handleActionButton(buttonAction, plant.id)}
+                  onPress={() => handleActionButton(buttonAction, item.id)}
                   buttonDirection={"left"}
                   disabled={
                     defaultSelectedPlantsIds.length >= 5 && buttonAction == "+"
                   }
                 />
               )}
-              <PlantComponent plant={plant} />
+              <PlantComponent plant={item} />
               {displayOccurences && (
                 <ActionButton
-                  action={countOccurences(plant.id).toString()}
+                  action={countOccurences(item.id).toString()}
                   onPress={() => null}
                   buttonDirection={"right"}
                   disabled={true}
                 />
               )}
             </View>
-          ))}
-        </ScrollView>
-        {currentXOffset + layoutWidth < scrollViewWidth && (
-          <ArrowButton
-            onPress={handleRightArrow}
-            disabled={currentXOffset + layoutWidth >= scrollViewWidth}
-            direction={"right"}
-          />
-        )}
+          )}
+          keyExtractor={(item) => item.id}
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+        />
+        <ArrowButton onPress={handleScrollRight} direction={"right"} />
       </View>
     </View>
   );

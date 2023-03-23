@@ -21,17 +21,16 @@ const styles = StyleSheet.create({
 
 interface ArrowButtonProps {
   onPress: () => void;
-  disabled: boolean;
   direction: "left" | "right";
 }
 
-const ArrowButton = ({ onPress, disabled, direction }: ArrowButtonProps) => {
+const ArrowButton = ({ onPress, direction }: ArrowButtonProps) => {
   return (
     <View>
       <TouchableOpacity
         style={styles.arrow}
         onPress={onPress}
-        disabled={disabled}
+
       >
         <AntDesign name={direction} size={20} style={styles.arrowIcon} />
       </TouchableOpacity>

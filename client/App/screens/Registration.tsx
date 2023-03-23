@@ -13,6 +13,7 @@ import colors from "../constants/colors";
 import { register } from "../store/actions";
 import { RootState } from "../store/reducers";
 import MainButton from "../components/MainButton";
+import { Fields } from "../store/types";
 
 const styles = StyleSheet.create({
   container: {
@@ -44,27 +45,47 @@ const Register = ({ navigation }) => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
-  const [isError, setIsError] = useState<boolean>(false);
+  const [error, setError] = useState("");
   const dispatch = useDispatch();
   const isFetching = useSelector((state: RootState) => state.user.isFetching);
 
-  const handleClick = (e: GestureResponderEvent) => {
+  const handleLogIn = (e: GestureResponderEvent) => {
     e.preventDefault();
-    if (password === confirmPassword) {
+    //TODO: add email validation
+
+    const fields = {
+      "first name": firstName,
+      "last name": lastName,
+      email,
+      password,
+      "password confirmation": confirmPassword,
+    };
+    let unsetField = false;
+    for (const key in fields) {
+      if (fields[key as keyof Fields] === "") {
+        setError(`Please input ${key}`);
+        unsetField = true;
+        break;
+      }
+    }
+    if (unsetField) {
+      return;
+    }
+    if (password === confirmPassword && password !== "") {
       register(dispatch, {
         first_name: firstName,
         last_name: lastName,
         email,
         password,
-      }).then((error) => {
-        if (!error) {
-          navigation.push("Home");
+      }).then((err) => {
+        if (err) {
+          setError(err);
         } else {
-          setIsError(error);
+          navigation.navigate("Home");
         }
       });
     } else {
-      window.alert("passwords dont match");
+      setError("Passwords dont match");
     }
   };
 
@@ -130,9 +151,9 @@ const Register = ({ navigation }) => {
       <MainButton
         disabled={isFetching}
         title="Register"
-        onPress={(e) => handleClick(e)}
+        onPress={(e) => handleLogIn(e)}
       />
-      {isError && <Text style={{ color: "red" }}>Something went wrong...</Text>}
+      {error && <Text style={{ color: "red" }}>{error}</Text>}
     </SafeAreaView>
   );
 };

@@ -1,5 +1,6 @@
 import axios from "axios";
-import { Dispatch } from "redux";
+import { SetStateAction } from "react";
+import { AnyAction, Dispatch } from "redux";
 import {
   getCategoriesFailure,
   getCategoriesStart,
@@ -24,8 +25,9 @@ export const fetchPlants = async (dispatch: Dispatch) => {
       "https://dev-agwa-public-static-assets-web.s3-us-west-2.amazonaws.com/data/catalogs/plants.json"
     );
     dispatch(getPlantsSuccess(response.data.plants));
-  } catch (err) {
+  } catch (err: any) {
     dispatch(getPlantsFailure());
+    return err.message;
   }
 };
 
@@ -36,8 +38,9 @@ export const fetchCategories = async (dispatch: Dispatch) => {
       "https://dev-agwa-public-static-assets-web.s3-us-west-2.amazonaws.com/data/catalogs/agwafarm.json"
     );
     dispatch(getCategoriesSuccess(response.data.categories));
-  } catch (err) {
+  } catch (err: any) {
     dispatch(getCategoriesFailure());
+    return err.message;
   }
 };
 export const register = async (dispatch: Dispatch, user: User) => {
@@ -45,10 +48,9 @@ export const register = async (dispatch: Dispatch, user: User) => {
   try {
     const res = await axios.post("/auth/register", user);
     dispatch(loginSuccess({ ...res.data }));
-    return false;
-  } catch (err) {
+  } catch (err: any) {
     dispatch(loginFailure());
-    return true;
+    return err.message;
   }
 };
 export const login = async (
@@ -59,9 +61,17 @@ export const login = async (
   try {
     const res = await axios.post("/auth/login", user);
     dispatch(loginSuccess(res.data));
-    return false;
-  } catch (err) {
+  } catch (err: any) {
     dispatch(loginFailure());
-    return true;
+    return err.message;
   }
+};
+
+// Periodically check for updates.
+export const startPollingData = () => (dispatch: Dispatch) => {
+  console.log("startPollingData");
+  setInterval(() => {
+    fetchPlants(dispatch);
+    fetchCategories(dispatch);
+  }, 300000); // fetch data every 5 minutes (300000 ms)
 };

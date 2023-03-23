@@ -14,6 +14,7 @@ import { login } from "../store/actions";
 import { RootState } from "../store/reducers";
 import { StatusBar } from "expo-status-bar";
 import MainButton from "../components/MainButton";
+import { Fields } from "../store/types";
 
 const styles = StyleSheet.create({
   container: {
@@ -40,17 +41,17 @@ const styles = StyleSheet.create({
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [isError, setIsError] = useState<boolean>(false);
+  const [error, setError] = useState(undefined);
   const dispatch = useDispatch();
   const isFetching = useSelector((state: RootState) => state.user.isFetching);
 
-  const handleClick = (e: GestureResponderEvent) => {
+  const handleLogIn = (e: GestureResponderEvent) => {
     e.preventDefault();
-    login(dispatch, { email, password }).then((error) => {
-      if (!error) {
-        navigation.push("Home");
+    login(dispatch, { email, password }).then((err) => {
+      if (err) {
+        setError(err);
       } else {
-        setIsError(error);
+        navigation.navigate("Home");
       }
     });
   };
@@ -84,9 +85,9 @@ const LoginScreen = ({ navigation }) => {
       <MainButton
         disabled={isFetching}
         title="Login"
-        onPress={(e) => handleClick(e)}
+        onPress={(e) => handleLogIn(e)}
       />
-      {isError && <Text style={{ color: "red" }}>Something went wrong...</Text>}
+      {error && <Text style={{ color: "red" }}>{error}</Text>}
       <View style={{ marginTop: 20 }}>
         <Text style={styles.text}>Don't have an account? </Text>
         <MainButton

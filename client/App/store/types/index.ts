@@ -27,4 +27,10 @@ export interface User {
   last_name?: string;
 }
 
-
+export interface Fields {
+  "first name": string;
+  "last name": string;
+  email: string;
+  password: string;
+  "password confirmation": string;
+}

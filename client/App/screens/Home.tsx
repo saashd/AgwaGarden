@@ -62,16 +62,25 @@ const Home = ({ route, navigation }) => {
   );
   const [loading, setLoading] = useState(true);
   const [displayConfirmation, setDisplayConfirmation] = useState(false);
+  const [error, setError] = useState(undefined);
 
   useEffect(() => {
     const fetchData = async () => {
-      await Promise.all([fetchCategories(dispatch), fetchPlants(dispatch)]);
-
+      await Promise.all([
+        fetchCategories(dispatch),
+        fetchPlants(dispatch),
+      ]).then((errors) => {
+        for (const error of errors) {
+          if (error) {
+            setError(error);
+          }
+        }
+      });
       defaultSelectedPlantsIds && setLoading(false);
     };
     fetchData();
     dispatch(updateDefaultSelectionStatus(false));
-  }, [dispatch]);
+  }, [dispatch, error]);
   useEffect(() => {
     if (confirmation) {
       setDisplayConfirmation(true);
@@ -112,6 +121,7 @@ const Home = ({ route, navigation }) => {
             onPress={() => navigation.push("Order")}
           />
         </View>
+        {error && <Text style={{ color: "red" }}>{error}</Text>}
       </View>
     </ScrollView>
   );

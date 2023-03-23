@@ -33,8 +33,9 @@ router.post("/register", (req, res) => __awaiter(void 0, void 0, void 0, functio
         first_name: req.body.first_name,
         last_name: req.body.last_name,
         onboarding: new Date(),
-        default_plants_selection: ["cucumber_iznik", "claytonia_special", "parsley_celery_flavored", "arugula_astro", "lettuce_romain"],
+        default_plants_selection: DEMO_DATA,
         email: req.body.email,
+        // Encrypt the password using CryptoJS and the password security key from the environment variables
         password: crypto_js_1.default.AES.encrypt(req.body.password, process.env.PASS_SEC).toString(),
     });
     try {
@@ -53,12 +54,15 @@ router.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* 
             res.status(401).json("Wrong credentials!");
         }
         else {
+            // Decrypt the password using CryptoJS and the password security key from the environment variables
             const hashedPassword = crypto_js_1.default.AES.decrypt(user.password, process.env.PASS_SEC);
             const OriginalPassword = hashedPassword.toString(crypto_js_1.default.enc.Utf8);
             if (OriginalPassword !== req.body.password) {
                 res.status(401).json("Wrong credentials!");
                 return;
             }
+            // Generate a JWT access token using the user ID and the JWT security key from the environment variables
+            //TODO: usew in the future to check if the user is active
             const accessToken = jsonwebtoken_1.default.sign({
                 id: user._id,
             }, process.env.JWT_SEC, { expiresIn: "24h" });
@@ -71,3 +75,10 @@ router.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
 }));
 module.exports = router;
+const DEMO_DATA = [
+    "cucumber_iznik",
+    "claytonia_special",
+    "parsley_celery_flavored",
+    "arugula_astro",
+    "lettuce_romain",
+];

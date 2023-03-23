@@ -4,10 +4,11 @@ import { store } from "./store";
 import Navigation from "./config/Navigation";
 import axios from "axios";
 import { Platform } from "react-native";
+import { startPollingData } from "./store/actions";
 
 const localhost = Platform.OS === "android" ? "10.0.2.2" : "localhost";
 axios.defaults.baseURL = `http://${localhost}:4000/api/`;
-
+store.dispatch(startPollingData());
 export default () => {
   return (
     <Provider store={store} >

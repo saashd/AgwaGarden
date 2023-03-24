@@ -16,6 +16,7 @@ import { RootState } from "../store/reducers";
 import MainButton from "../components/MainButton";
 import DefaultPlantsSelection from "../components/DefaultPlantsSelection";
 import { updateDefaultSelectionStatus } from "../store/reducers/userReducer";
+import { Action } from "../constants/consts";
 const screen = Dimensions.get("window");
 const styles = StyleSheet.create({
   container: {
@@ -109,7 +110,7 @@ const Home = ({ route, navigation }) => {
           plants selection:
         </Text>
         <DefaultPlantsSelection
-          buttonAction={null}
+          buttonAction={Action.NO_ACTION}
           title=""
           defaultSelectedPlantsIds={defaultSelectedPlantsIds}
           onSelectedPlantsChange={() => null}

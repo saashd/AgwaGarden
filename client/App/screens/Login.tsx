@@ -7,6 +7,8 @@ import {
   StyleSheet,
   GestureResponderEvent,
   ActivityIndicator,
+  Image,
+  Dimensions,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import colors from "../constants/colors";
@@ -14,8 +16,8 @@ import { login } from "../store/actions";
 import { RootState } from "../store/reducers";
 import { StatusBar } from "expo-status-bar";
 import MainButton from "../components/MainButton";
-import { Fields } from "../store/types";
 
+const screen = Dimensions.get("window");
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -26,6 +28,7 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     borderRadius: 30,
     width: "50%",
+    marginTop:10,
     marginBottom: 20,
     alignItems: "center",
   },
@@ -35,6 +38,11 @@ const styles = StyleSheet.create({
   },
   text: {
     textAlign: "center",
+  },
+  image: {
+    width: screen.width * 0.3,
+    height: screen.width * 0.3,
+    marginBottom: 50,
   },
 });
 
@@ -59,6 +67,7 @@ const LoginScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style="auto" />
+      <Image style={styles.image} source={require("../../assets/logo.png")} />
       {isFetching && (
         <ActivityIndicator size="large" color={colors.darkGreen} />
       )}

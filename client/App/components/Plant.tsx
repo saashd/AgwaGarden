@@ -14,8 +14,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
   },
   plantName: {
-    fontSize: 10,
-    fontWeight: "100",
+    fontSize: 12,
+    fontWeight: "200",
     width: screen.width * 0.15,
     textAlign: "center",
     flexWrap: "wrap",

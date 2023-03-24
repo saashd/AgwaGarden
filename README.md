@@ -4,6 +4,7 @@ AgwaGarden is a mobile app that allows users to order their favorite plants ever
 
 ## Directory Structure
 
+```
 ├── client
 │ ├── App
 │ │ ├── components
@@ -19,15 +20,17 @@ AgwaGarden is a mobile app that allows users to order their favorite plants ever
 │ ├── index.js
 │ ├── package.json
 │ ├── .env
-
+```
 ## Configuration
 
 In order to run the application, you need to set the following environment variables:
 
 `DATABASE_URL` - The URL of your MongoDB database. Example:
-mongodb+srv://USERNAME:PASSWORD@sqlauthority.5s3yxjh.mongodb.net/AgwaFarm?retryWrites=true&w=majority
-`PASS_SEC`= - A secret key used to encode authentication.  
-`JWT_SEC`= - A secret key used to sign and verify JSON Web Tokens.
+`mongodb+srv://USERNAME:PASSWORD@sqlauthority.5s3yxjh.mongodb.net/AgwaFarm?retryWrites=true&w=majority`
+
+`PASS_SEC`= A secret key used to encode authentication. 
+
+`JWT_SEC`=  A secret key used to sign and verify JSON Web Tokens.
 
 ## Installation and Local Usage
 
@@ -35,7 +38,7 @@ mongodb+srv://USERNAME:PASSWORD@sqlauthority.5s3yxjh.mongodb.net/AgwaFarm?retryW
 
 To run the app locally, follow the steps below:
 
-- Clone the repository: `git clone https://github.com/{username}/AgwaGarden.git`.
+- Clone the repository: `git clone https://github.com/saashd/AgwaGarden.git`.
 - Navigate to the client directory, install the dependencies and run client-side:
 
 ```sh

@@ -22,12 +22,12 @@ import {
   updateDefaultSelectionStatus,
 } from "../store/reducers/userReducer";
 import { fadeIn, fadeOut } from "../utils/buttonAnimation";
+import { Action, MAX_NUM_OF_SELECTED_PLANTS } from "../constants/consts";
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    
   },
   text: {
     textAlign: "center",
@@ -69,9 +69,9 @@ const Order = ({ navigation }) => {
     useSelector((state: RootState) => state.user.data.default_plants_selection)
   );
   const showButton =
-    defaultSelectedPlantsIds.length === 5 && defaultSelectionUpdateStatus;
+    defaultSelectedPlantsIds.length === MAX_NUM_OF_SELECTED_PLANTS &&
+    defaultSelectionUpdateStatus;
   const buttonOpacity = useRef(new Animated.Value(0)).current;
-  const buttonHeight = new Animated.Value(0);
   const buttonStyle = {
     transform: [
       {
@@ -87,18 +87,21 @@ const Order = ({ navigation }) => {
         }),
       },
     ],
-    height: buttonHeight,
+    height: 80,
     opacity: buttonOpacity,
   };
 
   const replacePlantsInCategories = useCallback(
     (plants: Plant[], categories: Category[]) => {
+      const plantIdToPlant = Object.assign(
+        {},
+        ...plants.map((x) => ({ [x.id]: x }))
+      );
       return categories.map((category) => {
         const updatedCategory = { ...category };
-        updatedCategory.plants = category.plants.map((plantInCategory) => {
-          const plant = plants.find((p: Plant) => p.id === plantInCategory.id);
-          return plant || plantInCategory;
-        });
+        updatedCategory.plants = category.plants
+          .filter((plantInCategory) => plantInCategory.id in plantIdToPlant)
+          .map(({ id }) => plantIdToPlant[id]);
         return updatedCategory;
       });
     },
@@ -118,9 +121,7 @@ const Order = ({ navigation }) => {
   };
 
   useEffect(() => {
-    showButton
-      ? fadeIn(buttonOpacity, buttonHeight)
-      : fadeOut(buttonOpacity, buttonHeight);
+    showButton ? fadeIn(buttonOpacity) : fadeOut(buttonOpacity);
   }, [showButton]);
 
   useEffect(() => {
@@ -157,7 +158,7 @@ const Order = ({ navigation }) => {
         contentContainerStyle={{ justifyContent: "center" }}
       >
         <DefaultPlantsSelection
-          buttonAction={"-"}
+          buttonAction={Action.REMOVE}
           title="Selected Plants"
           defaultSelectedPlantsIds={defaultSelectedPlantsIds}
           onSelectedPlantsChange={setDefaultSelectedPlantsIds}
@@ -176,7 +177,7 @@ const Order = ({ navigation }) => {
         <Text style={styles.title}>You can select 5 plants by choice:</Text>
         {modifiedCategories.map((category) => (
           <CategoryComponent
-            buttonAction={"+"}
+            buttonAction={Action.ADD}
             key={category.id}
             name={category.name}
             plants={category.plants}

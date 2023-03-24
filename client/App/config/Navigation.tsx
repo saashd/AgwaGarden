@@ -15,7 +15,6 @@ import { logout } from "../store/reducers/userReducer";
 const MainStack = createStackNavigator();
 const MainStackScreen = () => {
   const user = useSelector((state: RootState) => state.user.data);
-  const dispatch = useDispatch();
   return (
     <MainStack.Navigator
       screenOptions={{

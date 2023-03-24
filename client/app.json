@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "AgwaGarden",
-    "slug": "clie√nt",
+    "slug": "agwagarden",
     "version": "1.0.0",
     "icon": "./assets/logo.png",
     "userInterfaceStyle": "light",
@@ -10,7 +10,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#E9EFE7"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true
     },
@@ -25,6 +27,12 @@
     },
     "androidStatusBar": {
       "translucent": false
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "7c564bf7-17b6-45b4-b845-77a6ac3e8c08"
+      }
+    },
+    "owner": "saashd"
   }
 }

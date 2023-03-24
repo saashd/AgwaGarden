@@ -1,16 +1,16 @@
 import React from "react";
 import { SafeAreaView, View } from "react-native";
 import { useSelector } from "react-redux";
+import { Action } from "../constants/consts";
 import { RootState } from "../store/reducers";
 import { Plant } from "../store/types";
-
 import { CategoryComponent } from "./Category";
 
 interface DefaultPlantsSelectionProps {
   title: string;
   defaultSelectedPlantsIds: Array<string>;
   onSelectedPlantsChange: (selectedPlantsIds: Array<string>) => void;
-  buttonAction: "+" | "-" | null;
+  buttonAction: Action;
 }
 
 const DefaultPlantsSelection: React.FC<DefaultPlantsSelectionProps> = ({
@@ -21,9 +21,9 @@ const DefaultPlantsSelection: React.FC<DefaultPlantsSelectionProps> = ({
 }) => {
   const plants = useSelector((state: RootState) => state.plants.data);
   const filteredPlants = plants.filter((plant: Plant) =>
-  
     defaultSelectedPlantsIds.includes(plant.id)
   );
+
   return (
     <View>
       <SafeAreaView style={{ flex: 1 }}>

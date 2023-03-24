@@ -1,17 +1,16 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Provider } from "react-redux";
 import { store } from "./store";
 import Navigation from "./config/Navigation";
-import axios from "axios";
-import { Platform } from "react-native";
-import { startPollingData } from "./store/actions";
+import { getIP } from "./utils/getLocalIP";
 
-const localhost = Platform.OS === "android" ? "10.0.2.2" : "localhost";
-axios.defaults.baseURL = `http://${localhost}:4000/api/`;
-store.dispatch(startPollingData());
 export default () => {
+  useEffect(() => {
+    getIP();
+  }, []);
+
   return (
-    <Provider store={store} >
+    <Provider store={store}>
       <Navigation />
     </Provider>
   );

@@ -2,6 +2,12 @@
 
 AgwaGarden is a mobile app that allows users to order their favorite plants every month. With AgwaGarden, users can easily browse, order, and manage their plant subscriptions.
 
+
+
+https://user-images.githubusercontent.com/52024657/227614594-361e5c0b-854d-4032-a09b-2e2d1dbf6046.MOV
+
+
+
 ## Directory Structure
 
 ```

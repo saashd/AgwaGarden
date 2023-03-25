@@ -30,13 +30,19 @@ https://user-images.githubusercontent.com/52024657/227614594-361e5c0b-854d-4032-
 ## Configuration
 
 In order to run the application, you need to set the following environment variables:
+- Navigate to the server directory, create .env file and add folowing variables.
 
-`DATABASE_URL` - The URL of your MongoDB database. Example:
+```sh
+cd server
+touch .env
+```
+
+`MONGO_URL` - The URL of your MongoDB database. Example:
 `mongodb+srv://USERNAME:PASSWORD@sqlauthority.5s3yxjh.mongodb.net/AgwaFarm?retryWrites=true&w=majority`
 
-`PASS_SEC`= A secret key used to encode authentication. 
+`PASS_SEC` - A secret key used to encode authentication. 
 
-`JWT_SEC`=  A secret key used to sign and verify JSON Web Tokens.
+
 
 ## Installation and Local Usage
 
